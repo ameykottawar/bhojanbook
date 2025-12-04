@@ -16,27 +16,33 @@ export type Database = {
     Tables: {
       meals: {
         Row: {
+          addons: Json | null
           amount: number
           created_at: string
           id: string
           meal_date: string
           meal_type: Database["public"]["Enums"]["meal_type"]
+          notes: string | null
           student_id: string
         }
         Insert: {
+          addons?: Json | null
           amount: number
           created_at?: string
           id?: string
           meal_date?: string
           meal_type: Database["public"]["Enums"]["meal_type"]
+          notes?: string | null
           student_id: string
         }
         Update: {
+          addons?: Json | null
           amount?: number
           created_at?: string
           id?: string
           meal_date?: string
           meal_type?: Database["public"]["Enums"]["meal_type"]
+          notes?: string | null
           student_id?: string
         }
         Relationships: [
@@ -55,6 +61,8 @@ export type Database = {
           created_at: string
           email: string | null
           id: string
+          last_payment_amount: number | null
+          last_payment_date: string | null
           name: string
           phone: string
           start_date: string
@@ -65,6 +73,8 @@ export type Database = {
           created_at?: string
           email?: string | null
           id?: string
+          last_payment_amount?: number | null
+          last_payment_date?: string | null
           name: string
           phone: string
           start_date?: string
@@ -75,6 +85,8 @@ export type Database = {
           created_at?: string
           email?: string | null
           id?: string
+          last_payment_amount?: number | null
+          last_payment_date?: string | null
           name?: string
           phone?: string
           start_date?: string

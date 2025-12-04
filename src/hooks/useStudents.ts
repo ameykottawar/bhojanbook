@@ -38,12 +38,18 @@ export function useStudent(id: string | undefined) {
   });
 }
 
-// Create student
+// Create student - only requires basic info, not payment fields
 export function useCreateStudent() {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: async (student: Omit<Student, 'id' | 'created_at' | 'updated_at'>) => {
+    mutationFn: async (student: {
+      name: string;
+      phone: string;
+      email: string | null;
+      address: string | null;
+      start_date: string;
+    }) => {
       const { data, error } = await supabase
         .from('students')
         .insert(student)

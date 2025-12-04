@@ -38,6 +38,11 @@ export default function BillingPage() {
       mealTotals[meal.meal_type] += meal.amount;
     });
 
+    const addonsTotal = meals.reduce((sum, m) => {
+      const addonsSum = (m.addons || []).reduce((a, addon) => a + addon.quantity * addon.price, 0);
+      return sum + addonsSum;
+    }, 0);
+
     return {
       student: selectedStudent,
       month: String(month).padStart(2, '0'),
@@ -47,6 +52,7 @@ export default function BillingPage() {
       mealTotals,
       totalMeals: meals.length,
       totalAmount: meals.reduce((sum, m) => sum + m.amount, 0),
+      addonsTotal,
     };
   }, [selectedStudent, meals, month, year]);
 
