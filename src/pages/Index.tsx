@@ -1,11 +1,12 @@
 import { AppLayout } from '@/components/layout/AppLayout';
 import { useStudents } from '@/hooks/useStudents';
 import { useTodayMeals } from '@/hooks/useMeals';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { Users, UtensilsCrossed, Receipt, TrendingUp, Plus } from 'lucide-react';
+import { Users, UtensilsCrossed, Receipt, TrendingUp, Plus, UserPlus, CreditCard } from 'lucide-react';
 import { MEAL_NAMES, MEAL_PRICES } from '@/types';
+import { format } from 'date-fns';
 
 const Index = () => {
   const { data: students = [], isLoading: studentsLoading } = useStudents();
@@ -28,8 +29,70 @@ const Index = () => {
           <p className="text-muted-foreground mt-1">Manage your mess service effortlessly</p>
         </section>
 
+        {/* Two Main Sections */}
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-slide-up">
+          {/* Normal Billing Section */}
+          <Card className="border-2 border-dashed border-accent/50 hover:border-accent transition-colors">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-3">
+                <div className="p-2.5 bg-accent rounded-lg">
+                  <CreditCard className="h-5 w-5 text-accent-foreground" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-semibold">Normal Billing</h2>
+                  <p className="text-sm font-normal text-muted-foreground">For one-time customers</p>
+                </div>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <p className="text-sm text-muted-foreground">
+                Quick billing for walk-in customers who pay daily. No registration required.
+              </p>
+              <Link to="/punch?mode=normal">
+                <Button variant="secondary" className="w-full">
+                  <UtensilsCrossed className="h-4 w-4 mr-2" />
+                  Punch Normal Order
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+
+          {/* Registered Students Section */}
+          <Card className="border-2 border-primary/30 hover:border-primary/50 transition-colors">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-3">
+                <div className="p-2.5 bg-primary rounded-lg">
+                  <Users className="h-5 w-5 text-primary-foreground" />
+                </div>
+                <div>
+                  <h2 className="text-lg font-semibold">Registered Students</h2>
+                  <p className="text-sm font-normal text-muted-foreground">Monthly billing customers</p>
+                </div>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <p className="text-sm text-muted-foreground">
+                Track meals and generate monthly invoices for registered students.
+              </p>
+              <div className="flex gap-2">
+                <Link to="/punch" className="flex-1">
+                  <Button className="w-full">
+                    <UtensilsCrossed className="h-4 w-4 mr-2" />
+                    Punch Meal
+                  </Button>
+                </Link>
+                <Link to="/students">
+                  <Button variant="outline" size="icon">
+                    <UserPlus className="h-4 w-4" />
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
+        </section>
+
         {/* Quick Stats */}
-        <section className="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-slide-up">
+        <section className="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-slide-up" style={{ animationDelay: '100ms' }}>
           <Card className="bg-gradient-to-br from-primary/10 to-primary/5">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
@@ -89,7 +152,7 @@ const Index = () => {
 
         {/* Today's Meal Breakdown */}
         {todayMeals.length > 0 && (
-          <section className="animate-slide-up" style={{ animationDelay: '100ms' }}>
+          <section className="animate-slide-up" style={{ animationDelay: '150ms' }}>
             <h2 className="text-xl font-semibold text-foreground mb-4">Today's Breakdown</h2>
             <div className="grid grid-cols-3 gap-4">
               {(['mini', 'full', 'special'] as const).map((type) => (
@@ -130,7 +193,7 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Recent Students */}
+        {/* Recent Students with Last Payment Info */}
         {students.length > 0 && (
           <section className="animate-slide-up" style={{ animationDelay: '300ms' }}>
             <div className="flex items-center justify-between mb-4">
@@ -145,6 +208,14 @@ const Index = () => {
                   <CardContent className="p-4">
                     <p className="font-medium text-foreground">{student.name}</p>
                     <p className="text-sm text-muted-foreground">{student.phone}</p>
+                    {student.last_payment_date && (
+                      <div className="mt-2 pt-2 border-t border-border">
+                        <p className="text-xs text-muted-foreground">Last Payment</p>
+                        <p className="text-sm font-medium text-success">
+                          ₹{student.last_payment_amount} • {format(new Date(student.last_payment_date), 'dd MMM yyyy')}
+                        </p>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
               ))}
