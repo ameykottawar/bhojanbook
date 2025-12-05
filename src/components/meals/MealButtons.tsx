@@ -1,4 +1,4 @@
-import { MealType, MEAL_NAMES, MEAL_PRICES } from '@/types';
+import { MealType, MEAL_NAMES, getMealPrices } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Coffee, UtensilsCrossed, Star } from 'lucide-react';
 
@@ -21,6 +21,8 @@ const mealVariants: Record<MealType, 'mealMini' | 'mealFull' | 'mealSpecial'> = 
 };
 
 export function MealButtons({ onSelect, disabled, selectedType }: MealButtonsProps) {
+  const mealPrices = getMealPrices();
+  
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
       {(['mini', 'full', 'special'] as MealType[]).map((type) => {
@@ -38,7 +40,7 @@ export function MealButtons({ onSelect, disabled, selectedType }: MealButtonsPro
           >
             <Icon className="h-8 w-8 mb-2" />
             <span className="text-lg font-semibold">{MEAL_NAMES[type]}</span>
-            <span className="text-sm opacity-90">₹{MEAL_PRICES[type]}</span>
+            <span className="text-sm opacity-90">₹{mealPrices[type]}</span>
           </Button>
         );
       })}

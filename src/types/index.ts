@@ -41,8 +41,8 @@ export interface Meal {
   addons: AddOn[];
 }
 
-// Meal pricing configuration
-export const MEAL_PRICES: Record<MealType, number> = {
+// Default meal pricing configuration
+export const DEFAULT_MEAL_PRICES: Record<MealType, number> = {
   mini: 80,
   full: 95,
   special: 110,
@@ -74,6 +74,7 @@ export interface MessConfig {
   contact: string;
   address: string;
   upiId: string;
+  mealPrices: Record<MealType, number>;
 }
 
 export const DEFAULT_MESS_CONFIG: MessConfig = {
@@ -81,13 +82,19 @@ export const DEFAULT_MESS_CONFIG: MessConfig = {
   contact: '+91 98765 43210',
   address: '123 Food Street, City',
   upiId: 'tiffintracker@upi',
+  mealPrices: DEFAULT_MEAL_PRICES,
 };
 
 // Get mess config from localStorage or use default
 export function getMessConfig(): MessConfig {
   const stored = localStorage.getItem('messConfig');
   if (stored) {
-    return JSON.parse(stored);
+    const parsed = JSON.parse(stored);
+    // Ensure mealPrices exists (migration for old configs)
+    if (!parsed.mealPrices) {
+      parsed.mealPrices = DEFAULT_MEAL_PRICES;
+    }
+    return parsed;
   }
   return DEFAULT_MESS_CONFIG;
 }
@@ -96,6 +103,14 @@ export function getMessConfig(): MessConfig {
 export function saveMessConfig(config: MessConfig) {
   localStorage.setItem('messConfig', JSON.stringify(config));
 }
+
+// Get current meal prices (from settings)
+export function getMealPrices(): Record<MealType, number> {
+  return getMessConfig().mealPrices;
+}
+
+// Legacy export for backwards compatibility
+export const MEAL_PRICES = DEFAULT_MEAL_PRICES;
 
 // Legacy export for backwards compatibility
 export const MESS_CONFIG = DEFAULT_MESS_CONFIG;
