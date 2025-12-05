@@ -4,9 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { MessConfig, getMessConfig, saveMessConfig, DEFAULT_MESS_CONFIG } from '@/types';
+import { MessConfig, getMessConfig, saveMessConfig, DEFAULT_MESS_CONFIG, MEAL_NAMES, MealType } from '@/types';
 import { toast } from 'sonner';
-import { Settings, Store, Save, RotateCcw } from 'lucide-react';
+import { Settings, Store, Save, RotateCcw, IndianRupee } from 'lucide-react';
 
 export default function SettingsPage() {
   const [config, setConfig] = useState<MessConfig>(DEFAULT_MESS_CONFIG);
@@ -26,6 +26,17 @@ export default function SettingsPage() {
     toast.success('Settings reset to defaults');
   };
 
+  const handlePriceChange = (mealType: MealType, value: string) => {
+    const price = parseInt(value) || 0;
+    setConfig({
+      ...config,
+      mealPrices: {
+        ...config.mealPrices,
+        [mealType]: price,
+      },
+    });
+  };
+
   return (
     <AppLayout>
       <div className="space-y-6 max-w-2xl mx-auto">
@@ -35,7 +46,7 @@ export default function SettingsPage() {
             <Settings className="h-6 w-6" />
             Settings
           </h1>
-          <p className="text-muted-foreground">Configure your mess details for invoices</p>
+          <p className="text-muted-foreground">Configure your mess details and pricing</p>
         </div>
 
         {/* Mess Details Card */}
@@ -89,19 +100,50 @@ export default function SettingsPage() {
                 placeholder="yourmess@upi"
               />
             </div>
-
-            <div className="flex gap-3 pt-4">
-              <Button onClick={handleSave} className="flex-1">
-                <Save className="h-4 w-4 mr-2" />
-                Save Settings
-              </Button>
-              <Button variant="outline" onClick={handleReset}>
-                <RotateCcw className="h-4 w-4 mr-2" />
-                Reset
-              </Button>
-            </div>
           </CardContent>
         </Card>
+
+        {/* Meal Pricing Card */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <IndianRupee className="h-5 w-5" />
+              Meal Pricing
+            </CardTitle>
+            <CardDescription>
+              Set custom prices for each meal type
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {(['mini', 'full', 'special'] as MealType[]).map((mealType) => (
+              <div key={mealType} className="flex items-center gap-4">
+                <Label className="w-32 font-medium">{MEAL_NAMES[mealType]}</Label>
+                <div className="relative flex-1">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">₹</span>
+                  <Input
+                    type="number"
+                    min="0"
+                    value={config.mealPrices[mealType]}
+                    onChange={(e) => handlePriceChange(mealType, e.target.value)}
+                    className="pl-8"
+                  />
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+
+        {/* Action Buttons */}
+        <div className="flex gap-3">
+          <Button onClick={handleSave} className="flex-1">
+            <Save className="h-4 w-4 mr-2" />
+            Save Settings
+          </Button>
+          <Button variant="outline" onClick={handleReset}>
+            <RotateCcw className="h-4 w-4 mr-2" />
+            Reset
+          </Button>
+        </div>
       </div>
     </AppLayout>
   );

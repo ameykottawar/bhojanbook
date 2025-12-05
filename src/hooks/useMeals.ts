@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Meal, MealType, MEAL_PRICES, AddOn } from '@/types';
+import { Meal, MealType, getMealPrices, AddOn } from '@/types';
 import { toast } from 'sonner';
 import { Json } from '@/integrations/supabase/types';
 
@@ -62,7 +62,8 @@ export function useCreateMeal() {
       addons?: AddOn[];
       amount?: number;
     }) => {
-      const baseAmount = MEAL_PRICES[meal_type];
+      const mealPrices = getMealPrices();
+      const baseAmount = mealPrices[meal_type];
       const addonsTotal = (addons || []).reduce((sum, a) => sum + a.quantity * a.price, 0);
       const amount = customAmount ?? (baseAmount + addonsTotal);
       
@@ -106,7 +107,8 @@ export function useUpdateMeal() {
       notes?: string | null;
       addons?: AddOn[];
     }) => {
-      const baseAmount = MEAL_PRICES[meal_type];
+      const mealPrices = getMealPrices();
+      const baseAmount = mealPrices[meal_type];
       const addonsTotal = (addons || []).reduce((sum, a) => sum + a.quantity * a.price, 0);
       const amount = baseAmount + addonsTotal;
       
