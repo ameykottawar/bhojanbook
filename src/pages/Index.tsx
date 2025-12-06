@@ -32,7 +32,7 @@ const Index = () => {
         {/* Two Main Sections */}
         <section className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-slide-up">
           {/* Normal Billing Section */}
-          <Card className="border-2 border-dashed border-accent/50 hover:border-accent transition-colors">
+          <Card className="border border-border hover:border-accent hover:shadow-medium transition-all">
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-3">
                 <div className="p-2.5 bg-accent rounded-lg">
@@ -58,7 +58,7 @@ const Index = () => {
           </Card>
 
           {/* Registered Students Section */}
-          <Card className="border-2 border-primary/30 hover:border-primary/50 transition-colors">
+          <Card className="border border-border hover:border-primary hover:shadow-medium transition-all">
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-3">
                 <div className="p-2.5 bg-primary rounded-lg">
