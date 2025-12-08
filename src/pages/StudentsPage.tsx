@@ -7,8 +7,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Plus, Search, Users } from 'lucide-react';
 import { Student } from '@/types';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function StudentsPage() {
+  const { t } = useLanguage();
   const { data: students = [], isLoading } = useStudents();
   const [search, setSearch] = useState('');
   const [formOpen, setFormOpen] = useState(false);
@@ -35,12 +37,12 @@ export default function StudentsPage() {
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-bold text-foreground">Students</h1>
-            <p className="text-muted-foreground">Manage your registered students</p>
+            <h1 className="text-2xl font-bold text-foreground">{t('students.title')}</h1>
+            <p className="text-muted-foreground">{t('students.subtitle')}</p>
           </div>
           <Button onClick={() => setFormOpen(true)}>
             <Plus className="h-4 w-4 mr-2" />
-            Add Student
+            {t('students.addStudent')}
           </Button>
         </div>
 
@@ -50,7 +52,7 @@ export default function StudentsPage() {
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search students..."
+            placeholder={t('students.title') + '...'}
             className="pl-10"
           />
         </div>
@@ -74,10 +76,10 @@ export default function StudentsPage() {
               <Users className="h-8 w-8 text-muted-foreground" />
             </div>
             <h3 className="text-lg font-semibold text-foreground">
-              {search ? 'No students found' : 'No students yet'}
+              {search ? t('students.noStudents') : t('students.noStudents')}
             </h3>
             <p className="text-muted-foreground mt-1">
-              {search ? 'Try a different search term' : 'Add your first student to get started'}
+              {search ? t('students.noStudents') : t('students.addFirstStudent')}
             </p>
           </div>
         )}

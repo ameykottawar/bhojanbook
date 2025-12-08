@@ -5,10 +5,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { Users, UtensilsCrossed, Receipt, TrendingUp, Plus, UserPlus, CreditCard } from 'lucide-react';
-import { MEAL_NAMES, MEAL_PRICES } from '@/types';
+import { MEAL_PRICES } from '@/types';
 import { format } from 'date-fns';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const Index = () => {
+  const { t } = useLanguage();
   const { data: students = [], isLoading: studentsLoading } = useStudents();
   const { data: todayMeals = [], isLoading: mealsLoading } = useTodayMeals();
 
@@ -25,8 +27,8 @@ const Index = () => {
       <div className="space-y-8">
         {/* Welcome Header */}
         <section className="animate-fade-in">
-          <h1 className="text-3xl font-bold text-foreground">Welcome to TiffinTracker</h1>
-          <p className="text-muted-foreground mt-1">Manage your mess service effortlessly</p>
+          <h1 className="text-3xl font-bold text-foreground">{t('home.title')}</h1>
+          <p className="text-muted-foreground mt-1">{t('home.subtitle')}</p>
         </section>
 
         {/* Two Main Sections */}
@@ -39,19 +41,19 @@ const Index = () => {
                   <CreditCard className="h-5 w-5 text-accent-foreground" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-semibold">Normal Billing</h2>
-                  <p className="text-sm font-normal text-muted-foreground">For one-time customers</p>
+                  <h2 className="text-lg font-semibold">{t('home.normalBilling')}</h2>
+                  <p className="text-sm font-normal text-muted-foreground">{t('home.normalBillingDesc')}</p>
                 </div>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               <p className="text-sm text-muted-foreground">
-                Quick billing for walk-in customers who pay daily. No registration required.
+                {t('home.normalBillingDesc')}
               </p>
               <Link to="/punch?mode=normal">
                 <Button variant="secondary" className="w-full">
                   <UtensilsCrossed className="h-4 w-4 mr-2" />
-                  Punch Normal Order
+                  {t('home.startBilling')}
                 </Button>
               </Link>
             </CardContent>
@@ -65,20 +67,20 @@ const Index = () => {
                   <Users className="h-5 w-5 text-primary-foreground" />
                 </div>
                 <div>
-                  <h2 className="text-lg font-semibold">Registered Students</h2>
-                  <p className="text-sm font-normal text-muted-foreground">Monthly billing customers</p>
+                  <h2 className="text-lg font-semibold">{t('home.registeredStudents')}</h2>
+                  <p className="text-sm font-normal text-muted-foreground">{t('home.registeredStudentsDesc')}</p>
                 </div>
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               <p className="text-sm text-muted-foreground">
-                Track meals and generate monthly invoices for registered students.
+                {t('home.registeredStudentsDesc')}
               </p>
               <div className="flex gap-2">
                 <Link to="/punch" className="flex-1">
                   <Button className="w-full">
                     <UtensilsCrossed className="h-4 w-4 mr-2" />
-                    Punch Meal
+                    {t('nav.punchMeal')}
                   </Button>
                 </Link>
                 <Link to="/students">
@@ -153,13 +155,13 @@ const Index = () => {
         {/* Today's Meal Breakdown */}
         {todayMeals.length > 0 && (
           <section className="animate-slide-up" style={{ animationDelay: '150ms' }}>
-            <h2 className="text-xl font-semibold text-foreground mb-4">Today's Breakdown</h2>
+            <h2 className="text-xl font-semibold text-foreground mb-4">{t('billing.summary')}</h2>
             <div className="grid grid-cols-3 gap-4">
               {(['mini', 'full', 'special'] as const).map((type) => (
                 <Card key={type} className="text-center">
                   <CardContent className="p-4">
                     <p className="text-3xl font-bold text-foreground">{todayMealCounts[type]}</p>
-                    <p className="text-sm text-muted-foreground">{MEAL_NAMES[type]}</p>
+                    <p className="text-sm text-muted-foreground">{t(`meal.${type}`)}</p>
                     <p className="text-xs text-muted-foreground mt-1">₹{todayMealCounts[type] * MEAL_PRICES[type]}</p>
                   </CardContent>
                 </Card>
@@ -170,24 +172,24 @@ const Index = () => {
 
         {/* Quick Actions */}
         <section className="animate-slide-up" style={{ animationDelay: '200ms' }}>
-          <h2 className="text-xl font-semibold text-foreground mb-4">Quick Actions</h2>
+          <h2 className="text-xl font-semibold text-foreground mb-4">{t('nav.home')}</h2>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <Link to="/punch">
               <Button variant="default" size="xl" className="w-full">
                 <UtensilsCrossed className="h-5 w-5 mr-2" />
-                Punch Meal
+                {t('nav.punchMeal')}
               </Button>
             </Link>
             <Link to="/students">
               <Button variant="secondary" size="xl" className="w-full">
                 <Plus className="h-5 w-5 mr-2" />
-                Add Student
+                {t('students.addStudent')}
               </Button>
             </Link>
             <Link to="/billing">
               <Button variant="outline" size="xl" className="w-full">
                 <Receipt className="h-5 w-5 mr-2" />
-                Generate Bill
+                {t('billing.generatePdf')}
               </Button>
             </Link>
           </div>
@@ -197,9 +199,9 @@ const Index = () => {
         {students.length > 0 && (
           <section className="animate-slide-up" style={{ animationDelay: '300ms' }}>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold text-foreground">Recent Students</h2>
+              <h2 className="text-xl font-semibold text-foreground">{t('home.registeredStudents')}</h2>
               <Link to="/students" className="text-sm text-primary hover:underline">
-                View all
+                {t('home.manageStudents')}
               </Link>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -229,12 +231,12 @@ const Index = () => {
             <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-secondary mb-4">
               <Users className="h-8 w-8 text-muted-foreground" />
             </div>
-            <h3 className="text-lg font-semibold text-foreground">No students yet</h3>
-            <p className="text-muted-foreground mt-1 mb-4">Add your first student to get started</p>
+            <h3 className="text-lg font-semibold text-foreground">{t('students.noStudents')}</h3>
+            <p className="text-muted-foreground mt-1 mb-4">{t('students.addFirstStudent')}</p>
             <Link to="/students">
               <Button>
                 <Plus className="h-4 w-4 mr-2" />
-                Add Student
+                {t('students.addStudent')}
               </Button>
             </Link>
           </section>

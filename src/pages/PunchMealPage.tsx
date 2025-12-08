@@ -12,11 +12,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { MealType, MEAL_NAMES, MEAL_PRICES, AddOn } from '@/types';
+import { MealType, MEAL_PRICES, AddOn } from '@/types';
 import { CheckCircle, UtensilsCrossed, User, Users } from 'lucide-react';
 import { format } from 'date-fns';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function PunchMealPage() {
+  const { t } = useLanguage();
   const [searchParams] = useSearchParams();
   const initialMode = searchParams.get('mode') === 'normal' ? 'normal' : 'registered';
   
@@ -89,8 +91,8 @@ export default function PunchMealPage() {
       <div className="space-y-6 max-w-4xl mx-auto">
         {/* Header */}
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Punch Meal</h1>
-          <p className="text-muted-foreground">Record a meal order</p>
+          <h1 className="text-2xl font-bold text-foreground">{t('punch.title')}</h1>
+          <p className="text-muted-foreground">{t('punch.subtitle')}</p>
         </div>
 
         {/* Success Overlay */}
@@ -100,9 +102,9 @@ export default function PunchMealPage() {
               <div className="inline-flex h-20 w-20 items-center justify-center rounded-full bg-success mb-4">
                 <CheckCircle className="h-10 w-10 text-success-foreground" />
               </div>
-              <h2 className="text-2xl font-bold text-foreground">Meal Punched!</h2>
+              <h2 className="text-2xl font-bold text-foreground">{t('punch.success')}</h2>
               <p className="text-muted-foreground">
-                {mode === 'registered' ? selectedStudent?.name : customerName || 'Customer'} - {selectedMealType && MEAL_NAMES[selectedMealType]}
+                {mode === 'registered' ? selectedStudent?.name : customerName || 'Customer'} - {selectedMealType && t(`meal.${selectedMealType}`)}
               </p>
               <p className="text-lg font-semibold text-primary mt-2">₹{totalAmount}</p>
             </div>
@@ -114,11 +116,11 @@ export default function PunchMealPage() {
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="normal" className="flex items-center gap-2">
               <User className="h-4 w-4" />
-              Normal Billing
+              {t('home.normalBilling')}
             </TabsTrigger>
             <TabsTrigger value="registered" className="flex items-center gap-2">
               <Users className="h-4 w-4" />
-              Registered Student
+              {t('home.registeredStudents')}
             </TabsTrigger>
           </TabsList>
 
@@ -194,7 +196,7 @@ export default function PunchMealPage() {
                       <div className="flex justify-between items-center">
                         <span className="text-foreground">Meal:</span>
                         <span className="font-semibold">
-                          {MEAL_NAMES[selectedMealType]} - ₹{MEAL_PRICES[selectedMealType]}
+                          {t(`meal.${selectedMealType}`)} - ₹{MEAL_PRICES[selectedMealType]}
                         </span>
                       </div>
                       {addonsTotal > 0 && (
@@ -312,7 +314,7 @@ export default function PunchMealPage() {
                         <div className="flex justify-between items-center">
                           <span className="text-foreground">Meal:</span>
                           <span className="font-semibold">
-                            {MEAL_NAMES[selectedMealType]} - ₹{MEAL_PRICES[selectedMealType]}
+                            {t(`meal.${selectedMealType}`)} - ₹{MEAL_PRICES[selectedMealType]}
                           </span>
                         </div>
                         {addonsTotal > 0 && (
