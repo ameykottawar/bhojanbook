@@ -6,11 +6,13 @@ import { StudentSelector } from '@/components/meals/StudentSelector';
 import { MonthSelector } from '@/components/billing/MonthSelector';
 import { BillingSummaryCard } from '@/components/billing/BillingSummaryCard';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { BillingSummary, MealType, MEAL_PRICES } from '@/types';
+import { BillingSummary, MealType } from '@/types';
 import { Receipt } from 'lucide-react';
 import { format } from 'date-fns';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function BillingPage() {
+  const { t } = useLanguage();
   const { data: students = [], isLoading: studentsLoading } = useStudents();
   
   const currentMonth = format(new Date(), 'yyyy-MM');
@@ -61,8 +63,8 @@ export default function BillingPage() {
       <div className="space-y-6 max-w-4xl mx-auto">
         {/* Header */}
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Billing</h1>
-          <p className="text-muted-foreground">Generate monthly invoices for students</p>
+          <h1 className="text-2xl font-bold text-foreground">{t('billing.title')}</h1>
+          <p className="text-muted-foreground">{t('billing.subtitle')}</p>
         </div>
 
         {/* Step 1: Select Student */}
@@ -70,7 +72,7 @@ export default function BillingPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground text-sm">1</span>
-              Select Student
+              {t('billing.selectStudent')}
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -85,7 +87,7 @@ export default function BillingPage() {
             ) : (
               <div className="text-center py-8 text-muted-foreground">
                 <Receipt className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                <p>No students registered yet</p>
+                <p>{t('students.noStudents')}</p>
               </div>
             )}
           </CardContent>
@@ -97,7 +99,7 @@ export default function BillingPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-primary-foreground text-sm">2</span>
-                Select Month
+                {t('billing.selectMonth')}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -122,7 +124,7 @@ export default function BillingPage() {
                 <CardContent className="p-6">
                   <div className="text-center py-8 text-muted-foreground">
                     <Receipt className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                    <p>No meals recorded for this month</p>
+                    <p>{t('billing.noMeals')}</p>
                   </div>
                 </CardContent>
               </Card>
