@@ -1,25 +1,34 @@
+import { useState } from 'react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { useStudents } from '@/hooks/useStudents';
-import { useTodayMeals } from '@/hooks/useMeals';
+import { useDateMeals } from '@/hooks/useMeals';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { Users, UtensilsCrossed, Receipt, TrendingUp, Plus, UserPlus, CreditCard } from 'lucide-react';
+import { Users, UtensilsCrossed, Receipt, TrendingUp, Plus, UserPlus, CreditCard, CalendarIcon } from 'lucide-react';
 import { MEAL_PRICES } from '@/types';
 import { format } from 'date-fns';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar } from '@/components/ui/calendar';
+import { cn } from '@/lib/utils';
 
 const Index = () => {
   const { t } = useLanguage();
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const formattedDate = format(selectedDate, 'yyyy-MM-dd');
+  
   const { data: students = [], isLoading: studentsLoading } = useStudents();
-  const { data: todayMeals = [], isLoading: mealsLoading } = useTodayMeals();
+  const { data: dateMeals = [], isLoading: mealsLoading } = useDateMeals(formattedDate);
 
-  // Calculate today's stats
-  const todayTotal = todayMeals.reduce((sum, meal) => sum + meal.amount, 0);
-  const todayMealCounts = {
-    mini: todayMeals.filter((m) => m.meal_type === 'mini').length,
-    full: todayMeals.filter((m) => m.meal_type === 'full').length,
-    special: todayMeals.filter((m) => m.meal_type === 'special').length,
+  const isToday = format(new Date(), 'yyyy-MM-dd') === formattedDate;
+
+  // Calculate stats for selected date
+  const dateTotal = dateMeals.reduce((sum, meal) => sum + meal.amount, 0);
+  const dateMealCounts = {
+    mini: dateMeals.filter((m) => m.meal_type === 'mini').length,
+    full: dateMeals.filter((m) => m.meal_type === 'full').length,
+    special: dateMeals.filter((m) => m.meal_type === 'special').length,
   };
 
   return (
@@ -93,6 +102,32 @@ const Index = () => {
           </Card>
         </section>
 
+        {/* Date Selector */}
+        <section className="animate-slide-up" style={{ animationDelay: '50ms' }}>
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-semibold text-foreground">
+              {isToday ? t('home.dateSummary') : format(selectedDate, 'dd MMM yyyy')}
+            </h2>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button variant="outline" className={cn("justify-start text-left font-normal")}>
+                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  {format(selectedDate, 'PPP')}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="end">
+                <Calendar
+                  mode="single"
+                  selected={selectedDate}
+                  onSelect={(date) => date && setSelectedDate(date)}
+                  initialFocus
+                  className="pointer-events-auto"
+                />
+              </PopoverContent>
+            </Popover>
+          </div>
+        </section>
+
         {/* Quick Stats */}
         <section className="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-slide-up" style={{ animationDelay: '100ms' }}>
           <Card className="bg-gradient-to-br from-primary/10 to-primary/5">
@@ -116,8 +151,8 @@ const Index = () => {
                   <UtensilsCrossed className="h-5 w-5 text-accent-foreground" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-foreground">{todayMeals.length}</p>
-                  <p className="text-sm text-muted-foreground">Today's Meals</p>
+                  <p className="text-2xl font-bold text-foreground">{dateMeals.length}</p>
+                  <p className="text-sm text-muted-foreground">{isToday ? t('home.todaysMeals') : t('home.mealsPunched')}</p>
                 </div>
               </div>
             </CardContent>
@@ -130,8 +165,8 @@ const Index = () => {
                   <TrendingUp className="h-5 w-5 text-success-foreground" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-foreground">₹{todayTotal}</p>
-                  <p className="text-sm text-muted-foreground">Today's Revenue</p>
+                  <p className="text-2xl font-bold text-foreground">₹{dateTotal}</p>
+                  <p className="text-sm text-muted-foreground">{isToday ? t('home.todaysRevenue') : t('billing.totalAmount')}</p>
                 </div>
               </div>
             </CardContent>
@@ -144,25 +179,25 @@ const Index = () => {
                   <Receipt className="h-5 w-5 text-warning-foreground" />
                 </div>
                 <div>
-                  <p className="text-2xl font-bold text-foreground">{Object.values(todayMealCounts).reduce((a, b) => a + b, 0)}</p>
-                  <p className="text-sm text-muted-foreground">Meals Punched</p>
+                  <p className="text-2xl font-bold text-foreground">{Object.values(dateMealCounts).reduce((a, b) => a + b, 0)}</p>
+                  <p className="text-sm text-muted-foreground">{t('home.mealsPunched')}</p>
                 </div>
               </div>
             </CardContent>
           </Card>
         </section>
 
-        {/* Today's Meal Breakdown */}
-        {todayMeals.length > 0 && (
+        {/* Meal Breakdown */}
+        {dateMeals.length > 0 && (
           <section className="animate-slide-up" style={{ animationDelay: '150ms' }}>
             <h2 className="text-xl font-semibold text-foreground mb-4">{t('billing.summary')}</h2>
             <div className="grid grid-cols-3 gap-4">
               {(['mini', 'full', 'special'] as const).map((type) => (
                 <Card key={type} className="text-center">
                   <CardContent className="p-4">
-                    <p className="text-3xl font-bold text-foreground">{todayMealCounts[type]}</p>
+                    <p className="text-3xl font-bold text-foreground">{dateMealCounts[type]}</p>
                     <p className="text-sm text-muted-foreground">{t(`meal.${type}`)}</p>
-                    <p className="text-xs text-muted-foreground mt-1">₹{todayMealCounts[type] * MEAL_PRICES[type]}</p>
+                    <p className="text-xs text-muted-foreground mt-1">₹{dateMealCounts[type] * MEAL_PRICES[type]}</p>
                   </CardContent>
                 </Card>
               ))}

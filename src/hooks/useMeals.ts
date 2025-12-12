@@ -166,17 +166,22 @@ export function useDeleteMeal() {
 // Get today's meals count
 export function useTodayMeals() {
   const today = new Date().toISOString().split('T')[0];
-  
+  return useDateMeals(today);
+}
+
+// Get meals for a specific date
+export function useDateMeals(date: string) {
   return useQuery({
-    queryKey: ['meals', 'today', today],
+    queryKey: ['meals', 'date', date],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('meals')
         .select('*')
-        .eq('meal_date', today);
+        .eq('meal_date', date);
       
       if (error) throw error;
       return (data || []).map(parseMeal);
     },
+    enabled: !!date,
   });
 }
