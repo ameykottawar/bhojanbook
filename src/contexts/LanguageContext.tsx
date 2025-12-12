@@ -27,6 +27,11 @@ export const translations: Record<Language, Record<string, string>> = {
     'home.registeredStudents': 'Registered Students',
     'home.registeredStudentsDesc': 'Manage your monthly subscribers',
     'home.manageStudents': 'Manage Students',
+    'home.selectDate': 'Select Date',
+    'home.todaysMeals': "Today's Meals",
+    'home.todaysRevenue': "Today's Revenue",
+    'home.mealsPunched': 'Meals Punched',
+    'home.dateSummary': 'Date Summary',
     
     // Students page
     'students.title': 'Students',
@@ -117,6 +122,11 @@ export const translations: Record<Language, Record<string, string>> = {
     'home.registeredStudents': 'पंजीकृत छात्र',
     'home.registeredStudentsDesc': 'अपने मासिक ग्राहकों को प्रबंधित करें',
     'home.manageStudents': 'छात्र प्रबंधित करें',
+    'home.selectDate': 'तारीख चुनें',
+    'home.todaysMeals': 'आज के भोजन',
+    'home.todaysRevenue': 'आज की आय',
+    'home.mealsPunched': 'भोजन पंच किए गए',
+    'home.dateSummary': 'तारीख सारांश',
     
     // Students page
     'students.title': 'छात्र',
@@ -207,6 +217,11 @@ export const translations: Record<Language, Record<string, string>> = {
     'home.registeredStudents': 'नोंदणीकृत विद्यार्थी',
     'home.registeredStudentsDesc': 'तुमचे मासिक ग्राहक व्यवस्थापित करा',
     'home.manageStudents': 'विद्यार्थी व्यवस्थापित करा',
+    'home.selectDate': 'तारीख निवडा',
+    'home.todaysMeals': 'आजचे जेवण',
+    'home.todaysRevenue': 'आजची कमाई',
+    'home.mealsPunched': 'जेवण पंच केले',
+    'home.dateSummary': 'तारीख सारांश',
     
     // Students page
     'students.title': 'विद्यार्थी',
