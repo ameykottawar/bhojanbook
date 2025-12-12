@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -6,11 +7,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { MessConfig, getMessConfig, saveMessConfig, DEFAULT_MESS_CONFIG, MEAL_NAMES, MealType } from '@/types';
 import { toast } from 'sonner';
-import { Settings, Store, Save, RotateCcw, IndianRupee, Globe } from 'lucide-react';
+import { Settings, Store, Save, RotateCcw, IndianRupee, Globe, LogOut, User } from 'lucide-react';
 import { useLanguage, Language, LANGUAGE_NAMES } from '@/contexts/LanguageContext';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function SettingsPage() {
   const { t, language, setLanguage } = useLanguage();
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
   const [config, setConfig] = useState<MessConfig>(DEFAULT_MESS_CONFIG);
 
   useEffect(() => {
@@ -37,6 +41,12 @@ export default function SettingsPage() {
         [mealType]: price,
       },
     });
+  };
+
+  const handleLogout = async () => {
+    await signOut();
+    toast.success(t('auth.logoutSuccess'));
+    navigate('/auth', { replace: true });
   };
 
   return (
@@ -159,6 +169,31 @@ export default function SettingsPage() {
                 </div>
               </div>
             ))}
+          </CardContent>
+        </Card>
+
+        {/* Account Card */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <User className="h-5 w-5" />
+              {t('settings.account')}
+            </CardTitle>
+            <CardDescription>
+              {t('settings.accountDesc')}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium">{t('auth.email')}</p>
+                <p className="text-sm text-muted-foreground">{user?.email}</p>
+              </div>
+              <Button variant="destructive" onClick={handleLogout}>
+                <LogOut className="h-4 w-4 mr-2" />
+                {t('auth.logout')}
+              </Button>
+            </div>
           </CardContent>
         </Card>
 

@@ -104,6 +104,26 @@ export const translations: Record<Language, Record<string, string>> = {
     'common.edit': 'Edit',
     'common.save': 'Save',
     'common.close': 'Close',
+    
+    // Auth
+    'auth.login': 'Login',
+    'auth.signup': 'Sign Up',
+    'auth.logout': 'Logout',
+    'auth.email': 'Email',
+    'auth.password': 'Password',
+    'auth.loginSubtitle': 'Sign in to manage your mess',
+    'auth.signupSubtitle': 'Create an account to get started',
+    'auth.noAccount': "Don't have an account?",
+    'auth.hasAccount': 'Already have an account?',
+    'auth.loginSuccess': 'Logged in successfully',
+    'auth.signupSuccess': 'Account created successfully',
+    'auth.logoutSuccess': 'Logged out successfully',
+    'auth.invalidCredentials': 'Invalid email or password',
+    'auth.alreadyRegistered': 'This email is already registered',
+    
+    // Settings
+    'settings.account': 'Account',
+    'settings.accountDesc': 'Manage your account settings',
   },
   hi: {
     // Navigation
@@ -199,6 +219,26 @@ export const translations: Record<Language, Record<string, string>> = {
     'common.edit': 'संपादित करें',
     'common.save': 'सहेजें',
     'common.close': 'बंद करें',
+    
+    // Auth
+    'auth.login': 'लॉगिन',
+    'auth.signup': 'साइन अप',
+    'auth.logout': 'लॉगआउट',
+    'auth.email': 'ईमेल',
+    'auth.password': 'पासवर्ड',
+    'auth.loginSubtitle': 'अपने मेस को प्रबंधित करने के लिए साइन इन करें',
+    'auth.signupSubtitle': 'शुरू करने के लिए एक खाता बनाएं',
+    'auth.noAccount': 'खाता नहीं है?',
+    'auth.hasAccount': 'पहले से खाता है?',
+    'auth.loginSuccess': 'सफलतापूर्वक लॉग इन किया',
+    'auth.signupSuccess': 'खाता सफलतापूर्वक बनाया गया',
+    'auth.logoutSuccess': 'सफलतापूर्वक लॉग आउट किया',
+    'auth.invalidCredentials': 'अमान्य ईमेल या पासवर्ड',
+    'auth.alreadyRegistered': 'यह ईमेल पहले से पंजीकृत है',
+    
+    // Settings
+    'settings.account': 'खाता',
+    'settings.accountDesc': 'अपनी खाता सेटिंग्स प्रबंधित करें',
   },
   mr: {
     // Navigation
@@ -294,6 +334,26 @@ export const translations: Record<Language, Record<string, string>> = {
     'common.edit': 'संपादित करा',
     'common.save': 'जतन करा',
     'common.close': 'बंद करा',
+    
+    // Auth
+    'auth.login': 'लॉगिन',
+    'auth.signup': 'साइन अप',
+    'auth.logout': 'लॉगआउट',
+    'auth.email': 'ईमेल',
+    'auth.password': 'पासवर्ड',
+    'auth.loginSubtitle': 'तुमचा मेस व्यवस्थापित करण्यासाठी साइन इन करा',
+    'auth.signupSubtitle': 'सुरू करण्यासाठी खाते तयार करा',
+    'auth.noAccount': 'खाते नाही?',
+    'auth.hasAccount': 'आधीच खाते आहे?',
+    'auth.loginSuccess': 'यशस्वीरित्या लॉग इन केले',
+    'auth.signupSuccess': 'खाते यशस्वीरित्या तयार केले',
+    'auth.logoutSuccess': 'यशस्वीरित्या लॉग आउट केले',
+    'auth.invalidCredentials': 'अवैध ईमेल किंवा पासवर्ड',
+    'auth.alreadyRegistered': 'हा ईमेल आधीच नोंदणीकृत आहे',
+    
+    // Settings
+    'settings.account': 'खाते',
+    'settings.accountDesc': 'तुमच्या खाते सेटिंग्ज व्यवस्थापित करा',
   },
 };
 
