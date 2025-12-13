@@ -3,6 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Meal, MealType, getMealPrices, AddOn } from '@/types';
 import { toast } from 'sonner';
 import { Json } from '@/integrations/supabase/types';
+import { useAuth } from '@/contexts/AuthContext';
 
 // Helper to parse meal data from DB
 const parseMeal = (data: any): Meal => ({
@@ -45,6 +46,7 @@ export function useMonthlyMeals(studentId: string | undefined, year: number, mon
 // Create meal (punch meal)
 export function useCreateMeal() {
   const queryClient = useQueryClient();
+  const { user } = useAuth();
   
   return useMutation({
     mutationFn: async ({ 
@@ -62,6 +64,8 @@ export function useCreateMeal() {
       addons?: AddOn[];
       amount?: number;
     }) => {
+      if (!user) throw new Error('User not authenticated');
+      
       const mealPrices = getMealPrices();
       const baseAmount = mealPrices[meal_type];
       const addonsTotal = (addons || []).reduce((sum, a) => sum + a.quantity * a.price, 0);
@@ -74,6 +78,7 @@ export function useCreateMeal() {
         meal_date: meal_date || new Date().toISOString().split('T')[0],
         notes: notes || null,
         addons: (addons || []) as unknown as Json,
+        user_id: user.id,
       };
       
       const { data, error } = await supabase
