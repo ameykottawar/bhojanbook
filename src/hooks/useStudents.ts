@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Student } from '@/types';
 import { toast } from 'sonner';
+import { useAuth } from '@/contexts/AuthContext';
 
 // Fetch all students
 export function useStudents() {
@@ -41,6 +42,7 @@ export function useStudent(id: string | undefined) {
 // Create student - only requires basic info, not payment fields
 export function useCreateStudent() {
   const queryClient = useQueryClient();
+  const { user } = useAuth();
   
   return useMutation({
     mutationFn: async (student: {
@@ -50,9 +52,11 @@ export function useCreateStudent() {
       address: string | null;
       start_date: string;
     }) => {
+      if (!user) throw new Error('User not authenticated');
+      
       const { data, error } = await supabase
         .from('students')
-        .insert(student)
+        .insert({ ...student, user_id: user.id })
         .select()
         .single();
       

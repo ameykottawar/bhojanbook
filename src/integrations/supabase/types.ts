@@ -24,6 +24,7 @@ export type Database = {
           meal_type: Database["public"]["Enums"]["meal_type"]
           notes: string | null
           student_id: string | null
+          user_id: string | null
         }
         Insert: {
           addons?: Json | null
@@ -34,6 +35,7 @@ export type Database = {
           meal_type: Database["public"]["Enums"]["meal_type"]
           notes?: string | null
           student_id?: string | null
+          user_id?: string | null
         }
         Update: {
           addons?: Json | null
@@ -44,6 +46,7 @@ export type Database = {
           meal_type?: Database["public"]["Enums"]["meal_type"]
           notes?: string | null
           student_id?: string | null
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -67,6 +70,7 @@ export type Database = {
           phone: string
           start_date: string
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           address?: string | null
@@ -79,6 +83,7 @@ export type Database = {
           phone: string
           start_date?: string
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           address?: string | null
@@ -91,6 +96,7 @@ export type Database = {
           phone?: string
           start_date?: string
           updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }
