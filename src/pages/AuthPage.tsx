@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
-import { Utensils, Mail, Lock, Loader2 } from 'lucide-react';
+import { Utensils, Mail, Lock, Loader2, ArrowLeft } from 'lucide-react';
 import { z } from 'zod';
 
 const authSchema = z.object({
@@ -15,26 +15,46 @@ const authSchema = z.object({
   password: z.string().min(6, 'Password must be at least 6 characters'),
 });
 
+const resetEmailSchema = z.object({
+  email: z.string().email('Invalid email address'),
+});
+
+const newPasswordSchema = z.object({
+  password: z.string().min(6, 'Password must be at least 6 characters'),
+});
+
+type AuthMode = 'login' | 'signup' | 'forgot' | 'reset';
+
 export default function AuthPage() {
   const { t } = useLanguage();
-  const { user, signIn, signUp, loading } = useAuth();
+  const { user, signIn, signUp, loading, resetPassword, updatePassword } = useAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   
-  const [isLogin, setIsLogin] = useState(true);
+  const [mode, setMode] = useState<AuthMode>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
 
   useEffect(() => {
-    if (user && !loading) {
+    // Check if coming back from password reset email
+    if (searchParams.get('reset') === 'true' && user) {
+      setMode('reset');
+    } else if (user && !loading) {
       navigate('/', { replace: true });
     }
-  }, [user, loading, navigate]);
+  }, [user, loading, navigate, searchParams]);
 
   const validateForm = () => {
     try {
-      authSchema.parse({ email, password });
+      if (mode === 'forgot') {
+        resetEmailSchema.parse({ email });
+      } else if (mode === 'reset') {
+        newPasswordSchema.parse({ password });
+      } else {
+        authSchema.parse({ email, password });
+      }
       setErrors({});
       return true;
     } catch (err) {
@@ -58,7 +78,23 @@ export default function AuthPage() {
     setIsSubmitting(true);
     
     try {
-      if (isLogin) {
+      if (mode === 'forgot') {
+        const { error } = await resetPassword(email);
+        if (error) {
+          toast.error(error.message);
+        } else {
+          toast.success(t('auth.resetEmailSent'));
+          setMode('login');
+        }
+      } else if (mode === 'reset') {
+        const { error } = await updatePassword(password);
+        if (error) {
+          toast.error(error.message);
+        } else {
+          toast.success(t('auth.passwordUpdated'));
+          navigate('/', { replace: true });
+        }
+      } else if (mode === 'login') {
         const { error } = await signIn(email, password);
         if (error) {
           if (error.message.includes('Invalid login credentials')) {
@@ -88,6 +124,24 @@ export default function AuthPage() {
     }
   };
 
+  const getTitle = () => {
+    switch (mode) {
+      case 'forgot': return t('auth.forgotPassword');
+      case 'reset': return t('auth.resetPassword');
+      case 'signup': return t('auth.signup');
+      default: return t('auth.login');
+    }
+  };
+
+  const getSubtitle = () => {
+    switch (mode) {
+      case 'forgot': return t('auth.forgotSubtitle');
+      case 'reset': return t('auth.resetSubtitle');
+      case 'signup': return t('auth.signupSubtitle');
+      default: return t('auth.loginSubtitle');
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
@@ -104,72 +158,105 @@ export default function AuthPage() {
             <Utensils className="h-8 w-8 text-primary" />
           </div>
           <div>
-            <CardTitle className="text-2xl font-bold">TiffinTracker</CardTitle>
-            <CardDescription>
-              {isLogin ? t('auth.loginSubtitle') : t('auth.signupSubtitle')}
-            </CardDescription>
+            <CardTitle className="text-2xl font-bold">{getTitle()}</CardTitle>
+            <CardDescription>{getSubtitle()}</CardDescription>
           </div>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">{t('auth.email')}</Label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="owner@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="pl-10"
-                  disabled={isSubmitting}
-                />
+            {(mode === 'login' || mode === 'signup' || mode === 'forgot') && (
+              <div className="space-y-2">
+                <Label htmlFor="email">{t('auth.email')}</Label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="owner@example.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="pl-10"
+                    disabled={isSubmitting}
+                  />
+                </div>
+                {errors.email && (
+                  <p className="text-sm text-destructive">{errors.email}</p>
+                )}
               </div>
-              {errors.email && (
-                <p className="text-sm text-destructive">{errors.email}</p>
-              )}
-            </div>
+            )}
             
-            <div className="space-y-2">
-              <Label htmlFor="password">{t('auth.password')}</Label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  id="password"
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="pl-10"
-                  disabled={isSubmitting}
-                />
+            {(mode === 'login' || mode === 'signup' || mode === 'reset') && (
+              <div className="space-y-2">
+                <Label htmlFor="password">
+                  {mode === 'reset' ? t('auth.newPassword') : t('auth.password')}
+                </Label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="pl-10"
+                    disabled={isSubmitting}
+                  />
+                </div>
+                {errors.password && (
+                  <p className="text-sm text-destructive">{errors.password}</p>
+                )}
               </div>
-              {errors.password && (
-                <p className="text-sm text-destructive">{errors.password}</p>
-              )}
-            </div>
+            )}
             
             <Button type="submit" className="w-full" disabled={isSubmitting}>
               {isSubmitting ? (
                 <Loader2 className="h-4 w-4 animate-spin mr-2" />
               ) : null}
-              {isLogin ? t('auth.login') : t('auth.signup')}
+              {mode === 'forgot' ? t('auth.sendResetLink') : 
+               mode === 'reset' ? t('auth.updatePassword') :
+               mode === 'login' ? t('auth.login') : t('auth.signup')}
             </Button>
           </form>
           
-          <div className="mt-6 text-center">
-            <p className="text-sm text-muted-foreground">
-              {isLogin ? t('auth.noAccount') : t('auth.hasAccount')}{' '}
+          {mode === 'login' && (
+            <div className="mt-4 text-center">
               <button
                 type="button"
-                onClick={() => setIsLogin(!isLogin)}
-                className="text-primary hover:underline font-medium"
+                onClick={() => setMode('forgot')}
+                className="text-sm text-muted-foreground hover:text-primary hover:underline"
               >
-                {isLogin ? t('auth.signup') : t('auth.login')}
+                {t('auth.forgotPassword')}
               </button>
-            </p>
-          </div>
+            </div>
+          )}
+          
+          {(mode === 'forgot') && (
+            <div className="mt-4 text-center">
+              <button
+                type="button"
+                onClick={() => setMode('login')}
+                className="text-sm text-muted-foreground hover:text-primary hover:underline inline-flex items-center gap-1"
+              >
+                <ArrowLeft className="h-3 w-3" />
+                {t('auth.backToLogin')}
+              </button>
+            </div>
+          )}
+          
+          {(mode === 'login' || mode === 'signup') && (
+            <div className="mt-6 text-center">
+              <p className="text-sm text-muted-foreground">
+                {mode === 'login' ? t('auth.noAccount') : t('auth.hasAccount')}{' '}
+                <button
+                  type="button"
+                  onClick={() => setMode(mode === 'login' ? 'signup' : 'login')}
+                  className="text-primary hover:underline font-medium"
+                >
+                  {mode === 'login' ? t('auth.signup') : t('auth.login')}
+                </button>
+              </p>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
