@@ -129,7 +129,7 @@ const Index = () => {
         </section>
 
         {/* Quick Stats */}
-        <section className="grid grid-cols-2 lg:grid-cols-4 gap-4 animate-slide-up" style={{ animationDelay: '100ms' }}>
+        <section className="grid grid-cols-2 gap-4 animate-slide-up" style={{ animationDelay: '100ms' }}>
           <Card className="bg-gradient-to-br from-primary/10 to-primary/5">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
@@ -144,20 +144,6 @@ const Index = () => {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-accent/10 to-accent/5">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2.5 bg-accent rounded-lg">
-                  <UtensilsCrossed className="h-5 w-5 text-accent-foreground" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-foreground">{dateMeals.length}</p>
-                  <p className="text-sm text-muted-foreground">{isToday ? t('home.todaysMeals') : t('home.mealsPunched')}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
           <Card className="bg-gradient-to-br from-success/10 to-success/5">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
@@ -167,20 +153,6 @@ const Index = () => {
                 <div>
                   <p className="text-2xl font-bold text-foreground">₹{dateTotal}</p>
                   <p className="text-sm text-muted-foreground">{isToday ? t('home.todaysRevenue') : t('billing.totalAmount')}</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-warning/10 to-warning/5">
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2.5 bg-warning rounded-lg">
-                  <Receipt className="h-5 w-5 text-warning-foreground" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold text-foreground">{Object.values(dateMealCounts).reduce((a, b) => a + b, 0)}</p>
-                  <p className="text-sm text-muted-foreground">{t('home.mealsPunched')}</p>
                 </div>
               </div>
             </CardContent>
