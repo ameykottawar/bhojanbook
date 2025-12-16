@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AppLayout } from '@/components/layout/AppLayout';
 import { useStudents } from '@/hooks/useStudents';
 import { useDateMeals } from '@/hooks/useMeals';
@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { Users, UtensilsCrossed, Receipt, TrendingUp, Plus, UserPlus, CreditCard, CalendarIcon } from 'lucide-react';
-import { MEAL_PRICES } from '@/types';
+import { MEAL_PRICES, getMessConfig } from '@/types';
 import { format } from 'date-fns';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -16,7 +16,13 @@ import { cn } from '@/lib/utils';
 const Index = () => {
   const { t } = useLanguage();
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [messName, setMessName] = useState('TiffinTracker');
   const formattedDate = format(selectedDate, 'yyyy-MM-dd');
+
+  useEffect(() => {
+    const config = getMessConfig();
+    setMessName(config.name);
+  }, []);
   
   const { data: students = [], isLoading: studentsLoading } = useStudents();
   const { data: dateMeals = [], isLoading: mealsLoading } = useDateMeals(formattedDate);
@@ -36,7 +42,7 @@ const Index = () => {
       <div className="space-y-8">
         {/* Welcome Header */}
         <section className="animate-fade-in">
-          <h1 className="text-3xl font-bold text-foreground">{t('home.title')}</h1>
+          <h1 className="text-3xl font-bold text-foreground">{messName}</h1>
           <p className="text-muted-foreground mt-1">{t('home.subtitle')}</p>
         </section>
 
