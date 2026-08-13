@@ -9,7 +9,7 @@ interface AppLayoutProps {
 }
 
 const navItems = [
-  { path: '/', icon: Home, labelKey: 'nav.home' },
+  { path: '/dashboard', icon: Home, labelKey: 'nav.home' },
   { path: '/students', icon: Users, labelKey: 'nav.students' },
   { path: '/punch', icon: UtensilsCrossed, labelKey: 'nav.punchMeal' },
   { path: '/billing', icon: Receipt, labelKey: 'nav.billing' },
@@ -24,7 +24,7 @@ export function AppLayout({ children }: AppLayoutProps) {
       {/* Header */}
       <header className="sticky top-0 z-50 border-b border-border bg-card/80 backdrop-blur-sm">
         <div className="container flex h-16 items-center justify-between">
-          <Link to="/" className="flex items-center gap-3">
+          <Link to="/dashboard" className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground">
               <UtensilsCrossed className="h-5 w-5" />
             </div>

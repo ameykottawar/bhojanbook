@@ -42,7 +42,7 @@ export default function AuthPage() {
     if (searchParams.get('reset') === 'true' && user) {
       setMode('reset');
     } else if (user && !loading) {
-      navigate('/', { replace: true });
+      navigate('/dashboard', { replace: true });
     }
   }, [user, loading, navigate, searchParams]);
 
@@ -92,7 +92,7 @@ export default function AuthPage() {
           toast.error(error.message);
         } else {
           toast.success(t('auth.passwordUpdated'));
-          navigate('/', { replace: true });
+          navigate('/dashboard', { replace: true });
         }
       } else if (mode === 'login') {
         const { error } = await signIn(email, password);
@@ -104,7 +104,7 @@ export default function AuthPage() {
           }
         } else {
           toast.success(t('auth.loginSuccess'));
-          navigate('/', { replace: true });
+          navigate('/dashboard', { replace: true });
         }
       } else {
         const { error } = await signUp(email, password);
@@ -116,7 +116,7 @@ export default function AuthPage() {
           }
         } else {
           toast.success(t('auth.signupSuccess'));
-          navigate('/', { replace: true });
+          navigate('/dashboard', { replace: true });
         }
       }
     } finally {
